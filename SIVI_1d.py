@@ -31,13 +31,15 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 import scipy.stats as stats
 import tensorflow as tf
+import tensorflow_probability as tfp
+import tf_slim as slim
 import os
 
-slim=tf.contrib.slim
-Exponential=tf.contrib.distributions.Exponential(rate=1.0)
-Normal1=tf.contrib.distributions.Normal(loc=-2.0, scale=1.0)
-Normal2=tf.contrib.distributions.Normal(loc=2.0, scale=1.0)
-Normal=tf.contrib.distributions.Normal(loc=0., scale=1.)
+Exponential=tfp.distributions.Exponential(rate=1.0)
+Exponential=tfp.distributions.Exponential(rate=1.0)
+Normal1=tfp.distributions.Normal(loc=-2.0, scale=1.0)
+Normal2=tfp.distributions.Normal(loc=2.0, scale=1.0)
+Normal=tfp.distributions.Normal(loc=0., scale=1.)
 
 directory = os.getcwd()
 #%%
@@ -67,7 +69,7 @@ target = data_p[data_number]
 #%%
 noise_dim = 10
 K = 20 
-
+##############
 psi_sample = sample_hyper(noise_dim,K)
 
 sigma = tf.constant(0.2)
