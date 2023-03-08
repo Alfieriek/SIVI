@@ -82,17 +82,17 @@ merge = tf.compat.v1.placeholder(tf.int32, shape=[])
 psi_star = tf.cond(merge>0,lambda:tf.concat([psi_star,tf.transpose(psi_sample)],1),lambda:psi_star)
 
 
-log_H= tf.log(tf.reduce_mean(tf.exp(-0.5*tf.square(z_sample-psi_star)/tf.square(sigma)),axis=1,keep_dims=True))
+log_H= tf.math.log(tf.reduce_mean(tf.exp(-0.5*tf.square(z_sample-psi_star)/tf.square(sigma)),axis=1,keep_dims=True))
 
 #log_Q = -tf.log(sigma)-0.5*tf.square(z_sample-psi_sample)/tf.square(sigma)
 #regular = log_Q - log_H
 
 if target == 'gaussian':
-    log_P = -tf.log(3.0)-0.5*tf.square(z_sample)/tf.square(3.0) #gaussian
+    log_P = -tf.math.log(3.0)-0.5*tf.square(z_sample)/tf.square(3.0) #gaussian
 elif target == 'laplace':
     log_P = -0.5*tf.abs(z_sample) #laplace(mu=0,b=2)
 elif target == 'gmm':
-    log_P =tf.log(0.3*tf.exp(-tf.square(z_sample+2)/2)+0.7*tf.exp(-tf.square(z_sample-2)/2))
+    log_P =tf.math.log(0.3*tf.exp(-tf.square(z_sample+2)/2)+0.7*tf.exp(-tf.square(z_sample-2)/2))
 else:
     raise ValueError('No pre-defined target distribution, you can write your own log(PDF) ')
     
@@ -100,14 +100,14 @@ loss = tf.reduce_mean(log_H - log_P)
 
 nn_var =  slim.get_model_variables()
 lr=tf.constant(0.01)
-train_op1 = tf.train.AdamOptimizer(learning_rate=lr).minimize(loss,var_list=nn_var)
+train_op1 = tf.keras.optimizers.Adam(learning_rate=lr).minimize(loss,var_list=nn_var)
 
-init_op=tf.global_variables_initializer()
+init_op=tf.compat.v1.global_variables_initializer()
 
 
 #%%
 # merge==1 corresponds to lower bound; merge==0 corresponds to upper bound
-sess=tf.InteractiveSession()
+sess=tf.compat.v1.InteractiveSession()
 sess.run(init_op)
 record = []
 for i in range(5000):
