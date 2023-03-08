@@ -36,7 +36,6 @@ import tf_slim as slim
 import os
 
 Exponential=tfp.distributions.Exponential(rate=1.0)
-Exponential=tfp.distributions.Exponential(rate=1.0)
 Normal1=tfp.distributions.Normal(loc=-2.0, scale=1.0)
 Normal2=tfp.distributions.Normal(loc=2.0, scale=1.0)
 Normal=tfp.distributions.Normal(loc=0., scale=1.)
@@ -45,17 +44,17 @@ directory = os.getcwd()
 #%%
 
 def sample_n(mu,sigma):
-    eps = tf.random_normal(shape=tf.shape(mu))
+    eps = tf.random.normal(shape=tf.shape(mu))
     z=mu+eps*sigma
     return z
 
 
 def sample_hyper(noise_dim,K,reuse=False): 
     z_dim = 1
-    with tf.variable_scope("hyper_q") as scope:
+    with tf.compat.v1.variable_scope("hyper_q") as scope:
         if reuse:
             scope.reuse_variables()
-        e2 = tf.random_normal(shape=[K,noise_dim])
+        e2 = tf.random.normal(shape=[K,noise_dim])
         input_ = e2
         h2 = slim.stack(input_,slim.fully_connected,[20,40,20])
         mu = tf.reshape(slim.fully_connected(h2,z_dim,activation_fn=None,scope='implicit_hyper_mu'),[-1,1])
@@ -76,10 +75,10 @@ sigma = tf.constant(0.2)
 z_sample = sample_n(psi_sample,sigma) 
 
 
-J = tf.placeholder(tf.int32, shape=()) 
+J = tf.compat.v1.placeholder(tf.int32, shape=())
 psi_star = tf.transpose(sample_hyper(noise_dim,J,reuse=True)) 
 
-merge = tf.placeholder(tf.int32, shape=[])
+merge = tf.compat.v1.placeholder(tf.int32, shape=[])
 psi_star = tf.cond(merge>0,lambda:tf.concat([psi_star,tf.transpose(psi_sample)],1),lambda:psi_star)
 
 
