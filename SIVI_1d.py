@@ -74,7 +74,9 @@ psi_sample = sample_hyper(noise_dim,K)
 sigma = tf.constant(0.2)
 z_sample = sample_n(psi_sample,sigma) 
 
-
+# This makes J run#
+tf.compat.v1.disable_eager_execution()
+# This makes J run#
 J = tf.compat.v1.placeholder(tf.int32, shape=())
 psi_star = tf.transpose(sample_hyper(noise_dim,J,reuse=True)) 
 
